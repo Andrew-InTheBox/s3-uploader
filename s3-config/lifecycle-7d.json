@@ -1,0 +1,10 @@
+{
+  "Rules": [
+    {
+      "ID": "expire-camera-7d",
+      "Status": "Enabled",
+      "Filter": { "Prefix": "camera/" },
+      "Expiration": { "Days": 7 }
+    }
+  ]
+}
