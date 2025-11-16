@@ -12,6 +12,7 @@ BUCKET = "security-cam-backups"
 PREFIX = "camera/"
 MAX_RETRIES = 3
 STABLE_CHECKS = 3  # Number of consecutive checks file must be stable
+EXCLUDED_PREFIXES = ["xxx123xxx", "yyy123yyy"]  # Add prefixes to exclude from backup
 
 # S3 client with multipart upload configuration
 s3 = boto3.client("s3")
@@ -32,6 +33,12 @@ class UploadHandler(FileSystemEventHandler):
             return
         
         path = event.src_path
+        filename = os.path.basename(path)
+        
+        # Check if file starts with an excluded prefix
+        if any(filename.startswith(prefix) for prefix in EXCLUDED_PREFIXES):
+            self._log(f"Skipping excluded file: {filename}")
+            return
         
         # Check file extension
         if not path.lower().endswith((".dat", ".bvr", ".avi", ".mov", ".jpg", ".mp4")):
